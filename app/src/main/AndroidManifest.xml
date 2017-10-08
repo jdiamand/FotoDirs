@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.digiota.fotodirs">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/fotodirs"
+        android:supportsRtl="true"
+        android:label="@string/app_name"
+        android:name="com.digiota.fotodirs.FotoDirsApplication"
+        android:theme="@style/MyMaterialTheme">
+        <!-- android:theme="@style/AppTheme"  -->
+
+
+        <activity android:name="com.digiota.fotodirs.controller.MainActivity">
+
+        </activity>
+
+        <activity
+            android:name="com.digiota.fotodirs.controller.SplashActivity"
+            android:noHistory="true">
+
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+    </application>
+
+</manifest>
+
+<!--
+android:theme="@style/SplashTheme">
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+-->

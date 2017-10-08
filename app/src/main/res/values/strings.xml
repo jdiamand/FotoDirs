@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">FotoDirs</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="nav_item_camera_native">Native Camera</string>
+    <string name="nav_item_screenshots">ScreenShots</string>
+    <string name="nav_item_sd_card">SD Card</string>
+    <string name="nav_item_camera_3rdparty">Installed App Camera</string>
+
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_camera_native</item>
+        <item>@string/nav_item_camera_3rdparty</item>
+        <item>@string/nav_item_sd_card</item>
+        <item>@string/nav_item_screenshots</item>
+    </string-array>
+
+    <string name="title_messages">Messages</string>
+    <string name="title_friends">Friends</string>
+    <string name="title_home">Home</string>
+    <string name="major_version">1</string>
+    <string name="minor_version">3</string>
+</resources>

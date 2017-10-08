@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+
+    android:id="@+id/card_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardCornerRadius="8dp"
+
+    android:layout_marginBottom="4dp"
+    tools:mContext="com.digiota.fotodirs.com.digiota.fotodirs.controller.FotoGridFragment">
+
+    <com.digiota.fotodirs.adapter.SquareRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        >
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/photoResource"
+            android:layout_width="match_parent"
+            fresco:failureImage="@android:color/holo_orange_dark"
+            android:layout_height="match_parent"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:backgroundImage="@android:color/black"
+            fresco:placeholderImage="@android:color/holo_blue_dark"
+            fresco:fadeDuration="300"
+            />
+    </com.digiota.fotodirs.adapter.SquareRelativeLayout>
+
+</android.support.v7.widget.CardView>
