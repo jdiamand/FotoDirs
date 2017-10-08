@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             restoreDirectory(savedInstanceState);
 
         }
-
         // Instantiate MVC view associated with this activity
         mViewMVC = new MainViewMvcImpl(this, null);
 
