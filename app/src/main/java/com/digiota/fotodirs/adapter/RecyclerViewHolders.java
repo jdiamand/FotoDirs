@@ -1,5 +1,6 @@
 package com.digiota.fotodirs.adapter;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,7 +12,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
  * Created by jdiamand on 1/18/17.
  */
 
-public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class RecyclerViewHolders extends RecyclerView.ViewHolder  implements View.OnClickListener {
 
 
 
@@ -32,8 +33,11 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
         return super.toString();
     }
 
+
     @Override
     public void onClick(View view) {
-        int pos = getPosition() ;
+        int pos = getAdapterPosition()  ;
+
     }
+
 }

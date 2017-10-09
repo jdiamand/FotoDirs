@@ -1,6 +1,8 @@
 package com.digiota.fotodirs.controller;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,8 +14,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
-import android.widget.Toast;
 
 import com.digiota.fotodirs.FotoDirsApplication;
 import com.digiota.fotodirs.R;
@@ -25,16 +25,27 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     MainViewMvcImpl mViewMVC;
     private final static int TAG_CODE_READ_EXTERNAL_STORAGE = 1;
 
+    private int mDirectoryIndex  ;
+
     private FragmentDrawer mDrawerFragment;
-    boolean waiting = false ;
-    public static final String FOLDER_INDEX = "folder_index" ;
+    public static final String FOLDER_INDEX   = "folder_index" ;
+    public static final String PICTURE_INDEX  = "picture_index" ;
+    public static final String PREFS_PACKAGE  = "com.digiota.fotodirs" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        int pictureOffset = 0 ;
+        SharedPreferences prefs = this.getSharedPreferences(
+                PREFS_PACKAGE, Context.MODE_PRIVATE);
         if(savedInstanceState!=null) {
             restoreDirectory(savedInstanceState);
+            pictureOffset = prefs.getInt(PICTURE_INDEX, 0 ) ;
+        } else {
+            mDirectoryIndex = 0 ;
+
+            prefs.edit().putInt(PICTURE_INDEX, 0).apply();
 
         }
         // Instantiate MVC view associated with this activity
@@ -67,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         mDrawerFragment.setUp(mViewMVC.getNaviDrawerId(),
                 (DrawerLayout) findViewById(mViewMVC.getDrawerLayout()), mViewMVC.getToolbar());
         mDrawerFragment.setDrawerListener(this);
-        displayView(0);
+        displayDirectory(mDirectoryIndex,pictureOffset);
 
     }
 
@@ -92,26 +103,36 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     @Override
     public void onDrawerItemSelected(View view, int position) {
 
-            displayView(position) ;
+            int pictureOffset = 0 ;
+            if (position == mDirectoryIndex) {
+
+                SharedPreferences prefs = this.getSharedPreferences(
+                        PREFS_PACKAGE, Context.MODE_PRIVATE);
+                pictureOffset = prefs.getInt(PICTURE_INDEX, 0 ) ;
+            }
+        displayDirectory(position, pictureOffset);
     }
 
-    private void displayView(int position) {
+    private void displayDirectory(int directoryIndex, int pictureOffset) {
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         String subTitle = "/directory" ;
-        switch (position) {
+        mDirectoryIndex = directoryIndex ;
+        switch (directoryIndex) {
             case 0:
             case 1:
             default :
                 Bundle bundl = new Bundle();
-                bundl.putInt(FOLDER_INDEX, position);
-
+                bundl.putInt(FOLDER_INDEX, directoryIndex);
+                SharedPreferences prefs = this.getSharedPreferences(
+                        PREFS_PACKAGE, Context.MODE_PRIVATE);
+                prefs.edit().putInt(PICTURE_INDEX, pictureOffset);
                 fragment = new FotoGridFragment();
                 fragment.setArguments(bundl);
                 LocalMediaDirectory localMediaDirectory = FotoDirsApplication.getLocalMediaDirectory();
 
                 if (localMediaDirectory != null) {
-                    subTitle = localMediaDirectory.getFolderNameAtIndex(position);
+                    subTitle = localMediaDirectory.getFolderNameAtIndex(directoryIndex);
                 }
                 break;
 
@@ -132,8 +153,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         super.onSaveInstanceState(saveState);
-        waiting = true ;
-        saveState.putBoolean("waiting",waiting);
+        saveState.putInt(FOLDER_INDEX, mDirectoryIndex);
     }
 
 
@@ -155,21 +175,9 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     }
 
-
-
     private void restoreDirectory(Bundle savedInstanceState) {
-        waiting=savedInstanceState.getBoolean("waiting");
-        if (waiting) {
-            /*
-            AppClass app=(AppClass) getApplication();
-            ProgressDialog refresher=(ProgressDialog) app.Dialog.get();
-            refresher.dismiss();
-            String logingon=getString(R.string.signon);
-            app.Dialog=new WeakReference<ProgressDialog>(ProgressDialog.show(AddAccount.this, "", logingon, true));
-            */
-            Toast.makeText(this, "dir restored", Toast.LENGTH_LONG).show();
 
-        }
+        mDirectoryIndex = savedInstanceState.getInt(FOLDER_INDEX,0) ;
 
     }
 }

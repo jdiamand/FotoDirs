@@ -33,7 +33,6 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
     private LayoutInflater mLayoutInflater ;
     private LinearLayoutManager lLayout;
     private List<ItemObject> mRowListItem ;
-   // private List<ItemObject> mRowBitmapListItem ;
 
     private String mCurrrentFolderName ;
     private String mCurrentFullFolderName;
@@ -86,6 +85,8 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
 
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(mActivity, mRowListItem);
+
+
         mViewMVC.setLayoutAdapter(adapter) ;
 
 
@@ -118,7 +119,7 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-        Toast.makeText(getActivity(), "Item: " + (position +1) , Toast.LENGTH_SHORT).show();
+       //Toast.makeText(getActivity(), "Item: " + (position +1) , Toast.LENGTH_SHORT).show();
     }
 
     private List<ItemObject> getAllItemList(){
@@ -134,17 +135,12 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
                 String[] parts = fileList[i].toString().split("\\.") ;
                 if (parts.length > 1) {
                     if (parts[parts.length -1 ].compareToIgnoreCase("jpg") == 0 ) {
-                        //allItems.add(new ItemObject(-1, fileList[i]));
                         allItems.add(new ItemObject( fileList[i]));
                     }
                 }
 
             }
         }
-
-
-
-
 
         return allItems;
     }
@@ -153,31 +149,19 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
     private List<ItemObject> getAllBitmapItemList(){
         List<ItemObject> allItems = new ArrayList<ItemObject>();
         if (mCurrrentFolderName != null) {
-
-
             File dir = new File(mCurrentFullFolderName);
             File[] fileList = dir.listFiles();
-
-
-
             for (int i = 0; i < fileList.length; i++) {
 
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Bitmap bitmap = BitmapFactory.decodeFile(fileList[i].getName(),bmOptions);
                 bitmap = Bitmap.createScaledBitmap(bitmap,50,50,true);
                 //imageView.setImageBitmap(bitmap);
-
-
-
-
-
-
                 allItems.add( (ItemObject)bitmap);
             }
         }
 
         return allItems;
     }
-
-*/
+    */
 }

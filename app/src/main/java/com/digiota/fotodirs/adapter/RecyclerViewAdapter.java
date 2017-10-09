@@ -1,10 +1,12 @@
 package com.digiota.fotodirs.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.digiota.fotodirs.R;
+import com.digiota.fotodirs.controller.MainActivity;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -23,6 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.List;
+
+import static com.digiota.fotodirs.controller.MainActivity.PICTURE_INDEX;
+import static com.digiota.fotodirs.controller.MainActivity.PREFS_PACKAGE;
 
 /**
  * Created by jdiamand on 1/18/17.
@@ -45,11 +51,36 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
         return this.itemList.size();
     }
 
+    @Override
+    public void onViewAttachedToWindow(RecyclerViewHolders holder) {
+        super.onViewAttachedToWindow(holder);
+
+
+
+        RecyclerView recyclerView = (RecyclerView)mParent ;
+        GridLayoutManager layoutManager = ((GridLayoutManager) recyclerView.getLayoutManager());
+        int x =  layoutManager.findFirstCompletelyVisibleItemPosition() ;
+
+        SharedPreferences prefs = mContext.getSharedPreferences(
+               PREFS_PACKAGE, Context.MODE_PRIVATE);
+        prefs.edit().putInt(PICTURE_INDEX,x).apply();
+
+
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+
+    }
+
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_list, null);
+
+
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         mParent = parent ;
         return rcv;
@@ -99,7 +130,7 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
 
 
 
-       // holder.photo.setImageResource(itemList.get(position).getPhotoResource());
+
     }
 
     /*

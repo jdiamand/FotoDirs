@@ -1,6 +1,7 @@
 package com.digiota.fotodirs.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,7 +14,10 @@ import android.view.ViewGroup;
 
 import com.digiota.fotodirs.R;
 import com.digiota.fotodirs.adapter.RecyclerViewAdapter;
+import com.digiota.fotodirs.controller.MainActivity;
 import com.digiota.fotodirs.interfaces.LocalFotosViewMvc;
+
+import static com.digiota.fotodirs.controller.MainActivity.PICTURE_INDEX;
 
 /**
  * Created by jdiamand on 1/28/17.
@@ -76,6 +80,13 @@ public class FotoGridFragmentViewMvcImpl implements LocalFotosViewMvc {
         LinearLayoutManager llm = new GridLayoutManager(mContext, rows);
 
         rv.setLayoutManager(llm);
+
+        SharedPreferences prefs = mContext.getSharedPreferences(
+                MainActivity.PREFS_PACKAGE, Context.MODE_PRIVATE);
+
+        int pictureOffset = prefs.getInt(PICTURE_INDEX, 0 ) ;
+        llm.scrollToPositionWithOffset(pictureOffset, 0);
+
     }
 
 

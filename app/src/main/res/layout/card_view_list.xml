@@ -9,7 +9,7 @@
     android:layout_height="wrap_content"
     card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="8dp"
-
+    card_view:cardElevation="6dp"
     android:layout_marginBottom="4dp"
     tools:mContext="com.digiota.fotodirs.com.digiota.fotodirs.controller.FotoGridFragment">
 
