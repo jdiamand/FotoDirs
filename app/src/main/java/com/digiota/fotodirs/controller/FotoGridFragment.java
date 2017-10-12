@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
+
 
 import com.digiota.fotodirs.FotoDirsApplication;
 import com.digiota.fotodirs.adapter.ItemObject;
@@ -21,11 +21,13 @@ import com.digiota.fotodirs.adapter.RecyclerViewAdapter;
 import com.digiota.fotodirs.model.LocalMediaDirectory;
 import com.digiota.fotodirs.view.FotoGridFragmentViewMvcImpl;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.digiota.fotodirs.controller.MainActivity.FOLDER_INDEX;
+import static com.digiota.fotodirs.view.MainViewMvcImpl.FOLDER_INDEX;
+
 
 public class FotoGridFragment  extends Fragment implements AdapterView.OnItemClickListener {
 

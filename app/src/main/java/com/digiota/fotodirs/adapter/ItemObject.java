@@ -9,12 +9,12 @@ import java.io.File;
 public class ItemObject {
 
 
-    //private int photoResource;
+
     private File photoFile;
 
-    //public ItemObject( int photoResource, File photoFile ) {
+
     public ItemObject(  File photoFile ) {
-        //this.photoResource = photoResource;
+
         this.photoFile = photoFile;
     }
 
@@ -26,17 +26,6 @@ public class ItemObject {
         return photoFile;
     }
 
-/*
-    public void setPhotoFile(File photoFile) {
-        this.photoFile = photoFile;
-    }
-    public int getPhotoResource() {
-        return photoResource;
-    }
-    public void setPhotoResource(int photoResource) {
-        this.photoResource = photoResource;
-    }
-*/
 
 
 }

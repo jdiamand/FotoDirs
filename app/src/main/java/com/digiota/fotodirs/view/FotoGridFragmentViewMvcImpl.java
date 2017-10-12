@@ -17,7 +17,6 @@ import com.digiota.fotodirs.adapter.RecyclerViewAdapter;
 import com.digiota.fotodirs.controller.MainActivity;
 import com.digiota.fotodirs.interfaces.LocalFotosViewMvc;
 
-import static com.digiota.fotodirs.controller.MainActivity.PICTURE_INDEX;
 
 /**
  * Created by jdiamand on 1/28/17.
@@ -82,9 +81,9 @@ public class FotoGridFragmentViewMvcImpl implements LocalFotosViewMvc {
         rv.setLayoutManager(llm);
 
         SharedPreferences prefs = mContext.getSharedPreferences(
-                MainActivity.PREFS_PACKAGE, Context.MODE_PRIVATE);
+                 MainViewMvcImpl.PREFS_PACKAGE, Context.MODE_PRIVATE);
 
-        int pictureOffset = prefs.getInt(PICTURE_INDEX, 0 ) ;
+        int pictureOffset = prefs.getInt(MainViewMvcImpl.PICTURE_INDEX, 0 ) ;
         llm.scrollToPositionWithOffset(pictureOffset, 0);
 
     }

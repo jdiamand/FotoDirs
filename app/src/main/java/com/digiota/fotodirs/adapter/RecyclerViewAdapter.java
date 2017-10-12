@@ -15,20 +15,15 @@ import android.view.ViewGroup;
 
 import com.digiota.fotodirs.R;
 import com.digiota.fotodirs.controller.MainActivity;
+import com.digiota.fotodirs.view.MainViewMvcImpl;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOError;
 import java.io.IOException;
 import java.util.List;
 
-import static com.digiota.fotodirs.controller.MainActivity.PICTURE_INDEX;
-import static com.digiota.fotodirs.controller.MainActivity.PREFS_PACKAGE;
+import static com.digiota.fotodirs.view.MainViewMvcImpl.PREFS_PACKAGE;
 
 /**
  * Created by jdiamand on 1/18/17.
@@ -39,11 +34,13 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
 
     private List<ItemObject> itemList;
     private Context mContext;
+    public  Context getContext () { return mContext;}  ;
     ViewGroup mParent ;
 
     public RecyclerViewAdapter(Context mContext, List<ItemObject> itemList) {
         this.itemList = itemList;
         this.mContext = mContext;
+
     }
 
     @Override
@@ -59,11 +56,11 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
 
         RecyclerView recyclerView = (RecyclerView)mParent ;
         GridLayoutManager layoutManager = ((GridLayoutManager) recyclerView.getLayoutManager());
-        int x =  layoutManager.findFirstCompletelyVisibleItemPosition() ;
+        int pos =  layoutManager.findFirstCompletelyVisibleItemPosition()  ;
 
         SharedPreferences prefs = mContext.getSharedPreferences(
-               PREFS_PACKAGE, Context.MODE_PRIVATE);
-        prefs.edit().putInt(PICTURE_INDEX,x).apply();
+                PREFS_PACKAGE, Context.MODE_PRIVATE);
+        prefs.edit().putInt(MainViewMvcImpl.PICTURE_INDEX,pos).apply();
 
 
     }
@@ -81,7 +78,7 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_list, null);
 
 
-        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView, this);
         mParent = parent ;
         return rcv;
     }
@@ -114,8 +111,6 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
                 return ;
             }
 
-           // Log.d ("ExifInterfaceFF" , "file = " + item.getPhotoFile().toString() + ", width = "  + width + ", height = " + height ) ;
-
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                     .setResizeOptions(new ResizeOptions(300,300))
                     .build();
@@ -131,6 +126,10 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
 
 
 
+    }
+    public Object getObectAtIndex(int index ) {
+
+        return  itemList.get(index) ;
     }
 
     /*

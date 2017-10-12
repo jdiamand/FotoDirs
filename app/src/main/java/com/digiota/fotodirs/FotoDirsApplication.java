@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.digiota.fotodirs.model.LocalMediaDirectory;
 import com.digiota.fotodirs.model.MessageEvent;
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import org.greenrobot.eventbus.EventBus;
 
