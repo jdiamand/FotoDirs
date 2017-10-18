@@ -2,6 +2,7 @@ package com.digiota.fotodirs.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -10,25 +11,33 @@ import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
 import com.digiota.fotodirs.R;
 import com.digiota.fotodirs.controller.FotoDisplayActivity;
+import com.digiota.fotodirs.controller.ImageInfoFragment;
 
 
 import java.io.File;
 import java.io.IOException;
-
-import butterknife.ButterKnife;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 import static com.digiota.fotodirs.adapter.RecyclerViewHolders.SELECTED_PIC_DIRPATH;
@@ -39,6 +48,13 @@ import static com.digiota.fotodirs.adapter.RecyclerViewHolders.SELECTED_PIC_FILE
  */
 
 public class FotoDisplayViewMvcImpl {
+
+    //@BindView(R.id.foto_display_toolbar)
+   // Toolbar mToolbar ;
+   public  static final  String INFO_WINDOW_SHOW = "info_window_show" ;
+
+    boolean mInfoShow;
+    private Fragment mInfoFragment ;
     private Context mContext;
     static final String TAG = "FotoDisplayViewMvcImpl" ;
     Toolbar mToolbar;
@@ -49,16 +65,68 @@ public class FotoDisplayViewMvcImpl {
     int mCurrentImageWidth ;
     int mCurrentRotate ;
 
-    String mCurrentFotoDate ;
+    String mCurrentFotoDate = "" ;
     Float mLatitude ;
     Float mLongitude;
 
+    File mImageFile ;
+    int mRotateangle ;
+
+
+    static final int NONE = 0;
+    static final int DRAG = 1;
+    static final int ZOOM = 2;
+    Matrix matrix  ;
+    Matrix savedMatrix  ;
+    PointF start  ;
+
+    int mode  ;
+
+    PointF mid = new PointF();
+    float oldDist ;
+
+
+    public int getAngle() {
+
+        return mCurrentRotate ;
+    }
+
+    public String getFilename() {
+        if (mImageFile != null) {
+            return mImageFile.getAbsolutePath() ;
+        }
+        return null ;
+    }
     public String getCurrentFotoDate() {
-        return mCurrentFotoDate ;
+
+        String retVal = "Unavailable"    ;
+
+        if ( (mCurrentFotoDate != null) && (!mCurrentFotoDate.equals("")) ){
+
+            //String date="Mar 10, 2016 6:30:00 PM";
+            String date=mCurrentFotoDate ;
+            //SimpleDateFormat spf=new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aaa");
+            SimpleDateFormat spf=new SimpleDateFormat("yyyy:MM:dd hh:mm");
+            Date newDate ;
+            try {
+                 newDate = spf.parse(date);
+            } catch (ParseException e){
+                return "" ;
+            }
+            spf= new SimpleDateFormat("MMM dd yyyy  hh:mm aaa" );
+            date = spf.format(newDate);
+            return date ;
+        }
+
+
+        return retVal ;
     }
 
     public Float getCurrentLatitude() {
         return mLatitude ;
+    }
+    public Boolean getInfoFragmentAdd() {
+        return mInfoShow;
     }
 
     public Float getCurrentLongitude() {
@@ -72,27 +140,68 @@ public class FotoDisplayViewMvcImpl {
         return mDirName;
     }
 
+    public String getResolution() {
+
+        return  Integer.toString(mCurrentImageHeight ) + " x " +
+                    Integer.toString(mCurrentImageWidth) ;
+    }
+
     public FotoDisplayViewMvcImpl(Context context, ViewGroup container,Bundle bundle) {
         mContext = context ;
+        mImageFile = null ;
         mRootView = LayoutInflater.from(context).inflate(R.layout.activity_foto_display, container);
-        ButterKnife.bind((Activity)context) ;
+        addInfoFragment() ;
 
-        ((Activity)context).setContentView(mRootView);
+
+        ((FotoDisplayActivity)context).setContentView(mRootView);
 
         mToolbar = (Toolbar) mRootView.findViewById(R.id.foto_display_toolbar);
+        //ButterKnife.bind((FotoDisplayActivity)context) ;
+
+
+        if (bundle == null) {
+            mInfoShow = false ;
+            setInfoWindowViz(View.GONE) ;
+        } else {
+
+            mInfoShow = bundle.getBoolean(INFO_WINDOW_SHOW,false ) ;
+
+            if (mInfoShow) {
+                setInfoWindowViz(View.VISIBLE) ;
+
+
+            } else {
+                setInfoWindowViz(View.GONE) ;
+
+
+            }
+        }
 
 
         Uri uri = null ;
         Bundle extras = ((FotoDisplayActivity)context).getIntent().getExtras();
         if(extras !=null)
         {
+            if (((FotoDisplayActivity)context).getIntent().hasExtra(INFO_WINDOW_SHOW) ) {
+                mInfoShow = extras.getBoolean(INFO_WINDOW_SHOW,false ) ;
+                if (mInfoShow) {
+                    setInfoWindowViz(View.VISIBLE) ;
+
+
+                } else {
+                    setInfoWindowViz(View.GONE) ;
+
+
+                }
+
+            }
             String fileName = extras.getString(SELECTED_PIC_FILEPATH);
             mDirName = extras.getString(SELECTED_PIC_DIRPATH, "");
             if (fileName != null) {
 
-                File imgFile = new  File(fileName);
+                mImageFile = new  File(fileName);
 
-                if(imgFile.exists()){
+                if(mImageFile.exists()){
 
                     // EXIF
 
@@ -101,18 +210,18 @@ public class FotoDisplayViewMvcImpl {
                     String currentLong  ;
                     String currentLongRef ;
 
-                    int rotateangle = 0;
+                    mRotateangle = 0;
                     try {
                         ExifInterface exif = new ExifInterface(fileName);
                         String orientstring = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
                         int orientation = orientstring != null ? Integer.parseInt(orientstring) : ExifInterface.ORIENTATION_NORMAL;
-                        rotateangle = 0;
+                        mRotateangle = 0;
                         if(orientation == ExifInterface.ORIENTATION_ROTATE_90)
-                            rotateangle = 90;
+                            mRotateangle = 90;
                         if(orientation == ExifInterface.ORIENTATION_ROTATE_180)
-                            rotateangle = 180;
+                            mRotateangle = 180;
                         if(orientation == ExifInterface.ORIENTATION_ROTATE_270)
-                            rotateangle = 270;
+                            mRotateangle = 270;
 
                         mCurrentFotoDate = exif.getAttribute(ExifInterface.TAG_DATETIME);
                         //
@@ -158,37 +267,6 @@ public class FotoDisplayViewMvcImpl {
                     }
 
 
-
-                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-                    mCurrentImageHeight = myBitmap.getHeight() ;
-                    mCurrentImageWidth = myBitmap.getWidth() ;
-                    ImageView myImage = (ImageView) mRootView.findViewById(R.id.selectedFoto);
-
-                    mCurrentRotate = rotateangle ;
-                    Matrix mat = new Matrix();
-                    if (rotateangle != 0 ) {
-
-                        mat.setRotate(rotateangle, (float) myBitmap.getWidth() , (float) myBitmap.getHeight() );
-                        Bitmap myBitmap2 =
-                                Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), mat, true);
-                        myImage.setImageBitmap(myBitmap2);
-
-                    } else {
-                        myImage.setImageBitmap(myBitmap);
-                    }
-
-
-                     matrix = null ;
-
-                     savedMatrix = null ;
-                    start = new PointF();
-                    mode = NONE ;
-
-                    oldDist = 1f ;
-                    setupTouchListener(myImage) ;
-
-
                 }
 
 
@@ -196,7 +274,71 @@ public class FotoDisplayViewMvcImpl {
         }
 
 
+
     }
+
+   public  void drawImage() {
+
+        Bitmap myBitmap = BitmapFactory.decodeFile(mImageFile.getAbsolutePath());
+
+        mCurrentImageHeight = myBitmap.getHeight() ;
+        mCurrentImageWidth = myBitmap.getWidth() ;
+        ImageView myImage = (ImageView) mRootView.findViewById(R.id.selectedFoto);
+
+        mCurrentRotate = mRotateangle ;
+        Matrix mat = new Matrix();
+        if (mRotateangle != 0 ) {
+
+            mat.setRotate(mRotateangle, (float) myBitmap.getWidth() , (float) myBitmap.getHeight() );
+            Bitmap myBitmap2 =
+                    Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), mat, true);
+            myImage.setImageBitmap(myBitmap2);
+
+        } else {
+            myImage.setImageBitmap(myBitmap);
+        }
+
+
+        matrix = null ;
+
+        savedMatrix = null ;
+        start = new PointF();
+        mode = NONE ;
+
+        oldDist = 1f ;
+        setupTouchListener(myImage) ;
+
+
+    }
+
+    private void addInfoFragment() {
+
+        FrameLayout fl =  (FrameLayout)mRootView.findViewById(R.id.overlay_fragment_container) ;
+       FragmentTransaction ft = ((FotoDisplayActivity)mContext).getSupportFragmentManager().
+               beginTransaction();
+
+        mInfoFragment = new ImageInfoFragment() ;
+       ft.add(R.id.overlay_fragment_container, mInfoFragment).
+              setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).commit() ;
+
+    }
+
+
+    public boolean createMenu(Menu menu) {
+        MenuInflater inflater = ((FotoDisplayActivity)mContext).getMenuInflater();
+        inflater.inflate(R.menu.display_foto_menu, menu);
+        MenuItem mapMenuItem = menu.findItem(R.id.action_map_info ) ;
+        if ( (getCurrentLatitude() == null) || (getCurrentLongitude() == null)) {
+
+            mapMenuItem.setVisible(false) ;
+        } else {
+            mapMenuItem.setVisible(true) ;
+        }
+        return true;
+
+
+    }
+
 
 
     private Float convertToDegree(String stringDMS){
@@ -229,17 +371,6 @@ public class FotoDisplayViewMvcImpl {
 
 
 
-    static final int NONE = 0;
-    static final int DRAG = 1;
-    static final int ZOOM = 2;
-    Matrix matrix  ;
-    Matrix savedMatrix  ;
-    PointF start  ;
-
-    int mode  ;
-
-    PointF mid = new PointF();
-    float oldDist ;
 
 
     void  setupTouchListener(ImageView imageView) {
@@ -348,9 +479,48 @@ public class FotoDisplayViewMvcImpl {
             case android.R.id.home:
                 ((Activity)mContext).onBackPressed();
                 return true ;
+
+            case R.id.action_show_info:
+
+
+                mInfoShow = !mInfoShow;
+                Context appContext = mContext.getApplicationContext() ;
+                Intent intent = new Intent(appContext, FotoDisplayActivity.class);
+                Bundle bundle = new Bundle();// New activity
+                bundle.putString(SELECTED_PIC_FILEPATH, mImageFile.toString());
+                bundle.putString(SELECTED_PIC_DIRPATH, mDirName);
+                bundle.putBoolean(INFO_WINDOW_SHOW,mInfoShow) ;
+                intent.putExtras(bundle);
+                ((Activity)mContext).finish();
+                appContext.startActivity(intent);
+
+
+
+                return true ;
+
+
+            case R.id.action_map_info :
+
+                String url =
+                        "https://www.google.com/maps/search/?api=1&query="
+                        + getCurrentLatitude() + ","
+                        + getCurrentLongitude() ;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                ((Activity)mContext).startActivity(i);
+
+
+                return true ;
+
         }
         return false ;
     }
+
+    private void setInfoWindowViz(int viz) {
+        FrameLayout fl =  (FrameLayout)mRootView.findViewById(R.id.overlay_fragment_container) ;
+        fl.setVisibility(viz);
+    }
+
 
     public String getAppName() {
         return mContext.getString(R.string.app_name) ;

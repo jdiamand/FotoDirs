@@ -90,6 +90,8 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
         ItemObject item  = itemList.get(position);
 
         if(item.getPhotoFile() !=null){
+            int dotIndx = item.getPhotoFile().toString().lastIndexOf(".") ;
+            String photoType = item.getPhotoFile().toString().substring(++dotIndx) ;
             Uri uri = Uri.fromFile( item.getPhotoFile()) ;
             ExifInterface exif = null ;
             try {
@@ -107,13 +109,24 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
             int   height = exif.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH , 0) ;
 
 
-            if ( (width == 0)  || (height == 0 ) ) {
+            if ( (photoType.equals("jpg") && ((width == 0)  || (height == 0 ) ) ) ){
                 return ;
             }
+            ImageRequest request = null ;
+            String test = item.getPhotoFile().toString() ;
+            if (  (photoType.equals("png"))
+                 ||  photoType.equals("gif") )
+                {
 
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                    .setResizeOptions(new ResizeOptions(300,300))
-                    .build();
+                      request = ImageRequestBuilder.newBuilderWithSource(uri)
+
+                            .build();
+                } else {
+
+                      request = ImageRequestBuilder.newBuilderWithSource(uri)
+                        .setResizeOptions(new ResizeOptions(300, 300))
+                        .build();
+            }
             holder.photo.setController(
                     Fresco.newDraweeControllerBuilder()
                             .setOldController( holder.photo.getController())

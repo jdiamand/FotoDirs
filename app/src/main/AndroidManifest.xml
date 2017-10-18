@@ -5,9 +5,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/fotodirs"
+        android:icon="@drawable/folder_images"
         android:supportsRtl="true"
         android:label="@string/app_name"
+        android:configChanges="orientation"
         android:name="com.digiota.fotodirs.FotoDirsApplication"
         android:theme="@style/MyMaterialTheme">
         <!-- android:theme="@style/AppTheme"  -->
@@ -39,7 +40,3 @@
 
 </manifest>
 
-<!--
-android:theme="@style/SplashTheme">
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
--->

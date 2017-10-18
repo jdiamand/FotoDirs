@@ -1,12 +1,14 @@
 package com.digiota.fotodirs.adapter;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 
 /**
  * Created by jdiamand on 1/18/17.
  */
 
-public class ItemObject {
+public class ItemObject implements Comparable<ItemObject>{
 
 
 
@@ -27,5 +29,8 @@ public class ItemObject {
     }
 
 
-
+    @Override
+    public int compareTo(@NonNull ItemObject o) {
+        return this.photoFile.toString().compareToIgnoreCase(o.photoFile.toString());
+    }
 }

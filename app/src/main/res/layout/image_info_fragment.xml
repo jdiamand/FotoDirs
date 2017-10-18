@@ -26,6 +26,34 @@
         android:textColor="#FFF"
         android:text="TextView" />
 
+    <TextView
+        android:id="@+id/textViewFilename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textViewPathname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textViewRotation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/textViewResolution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF"
+        android:text="TextView" />
+
 
     />
 

@@ -24,8 +24,7 @@ import com.digiota.fotodirs.controller.FotoGridFragment;
 import com.digiota.fotodirs.interfaces.MainViewMvc;
 import com.digiota.fotodirs.model.LocalMediaDirectory;
 import com.facebook.drawee.backends.pipeline.Fresco;
-
-
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 
 
 /**
@@ -63,8 +62,14 @@ public class MainViewMvcImpl implements MainViewMvc {
         mBundle  = bundle ;
         ((Activity)context).setContentView(mRootView);
 
-        Fresco.initialize(context);
 
+        /*
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(context)
+                .setDownsampleEnabled(true)
+                .build();
+        Fresco.initialize(context,config);
+        */
+        Fresco.initialize(context);
         initialize();
     }
 

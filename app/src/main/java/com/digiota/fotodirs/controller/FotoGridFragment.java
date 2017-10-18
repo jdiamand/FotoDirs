@@ -24,6 +24,7 @@ import com.digiota.fotodirs.view.FotoGridFragmentViewMvcImpl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.digiota.fotodirs.view.MainViewMvcImpl.FOLDER_INDEX;
@@ -82,7 +83,7 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
         mLayoutInflater = inflater ;
 
         if (mRowListItem == null) {
-            mRowListItem = getAllItemList();
+            mRowListItem = sortItems(getAllItemList());
         }
 
 
@@ -138,6 +139,14 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
                 if (parts.length > 1) {
                     if (parts[parts.length -1 ].compareToIgnoreCase("jpg") == 0 ) {
                         allItems.add(new ItemObject( fileList[i]));
+                    } else {
+                        if (parts[parts.length -1 ].compareToIgnoreCase("png") == 0 ) {
+                            allItems.add(new ItemObject(fileList[i]));
+                        } else {
+                            if (parts[parts.length -1 ].compareToIgnoreCase("gif") == 0 ) {
+                                allItems.add(new ItemObject(fileList[i]));
+                            }
+                        }
                     }
                 }
 
@@ -147,23 +156,14 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
         return allItems;
     }
 
-    /*
-    private List<ItemObject> getAllBitmapItemList(){
-        List<ItemObject> allItems = new ArrayList<ItemObject>();
-        if (mCurrrentFolderName != null) {
-            File dir = new File(mCurrentFullFolderName);
-            File[] fileList = dir.listFiles();
-            for (int i = 0; i < fileList.length; i++) {
+    private List<ItemObject> sortItems(List<ItemObject> list)  {
 
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                Bitmap bitmap = BitmapFactory.decodeFile(fileList[i].getName(),bmOptions);
-                bitmap = Bitmap.createScaledBitmap(bitmap,50,50,true);
-                //imageView.setImageBitmap(bitmap);
-                allItems.add( (ItemObject)bitmap);
-            }
+        if (list != null ) {
+
+            Collections.sort(list, Collections.reverseOrder());
         }
-
-        return allItems;
+        return list ;
     }
-    */
+
+
 }
