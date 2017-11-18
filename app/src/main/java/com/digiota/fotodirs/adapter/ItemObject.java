@@ -5,7 +5,8 @@ import android.support.annotation.NonNull;
 import java.io.File;
 
 /**
- * Created by jdiamand on 1/18/17.
+ * Created by jdiamand on 1/18/17
+ * 
  */
 
 public class ItemObject implements Comparable<ItemObject>{
