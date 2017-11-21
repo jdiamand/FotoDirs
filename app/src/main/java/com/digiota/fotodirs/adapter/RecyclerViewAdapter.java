@@ -113,7 +113,7 @@ public class RecyclerViewAdapter  extends RecyclerView.Adapter<RecyclerViewHolde
                 return ;
             }
             ImageRequest request = null ;
-            String test = item.getPhotoFile().toString() ;
+
             if (  (photoType.equals("png"))
                  ||  photoType.equals("gif") )
                 {

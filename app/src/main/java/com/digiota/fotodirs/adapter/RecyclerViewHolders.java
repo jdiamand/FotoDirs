@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.digiota.fotodirs.R;
@@ -55,9 +56,18 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder  implements Vie
         ItemObject item = (ItemObject)mRecyclerViewAdapter.getObectAtIndex(pos) ;
         File photoFile = item.getPhotoFile() ;
         String s = photoFile.getAbsolutePath() ;
-        myIntent.putExtra(SELECTED_PIC_FILEPATH, s);
-        myIntent.putExtra(SELECTED_PIC_DIRPATH, mCurrentDirectory);
-        itemView.getContext().startActivity(myIntent);
+        // check to see that file still exists
+        File file = new File(s);
+        if(file.exists()){
+            // start activity to view image
+            myIntent.putExtra(SELECTED_PIC_FILEPATH, s);
+            myIntent.putExtra(SELECTED_PIC_DIRPATH, mCurrentDirectory);
+            itemView.getContext().startActivity(myIntent);
+        }
+        else {
+            // 1) issue Toast
+            Toast.makeText( itemView.getContext() , "Photo selected no longer exists."   , Toast.LENGTH_SHORT).show();
+        }
 
     }
 

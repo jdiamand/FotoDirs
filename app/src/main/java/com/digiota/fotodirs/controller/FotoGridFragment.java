@@ -30,29 +30,29 @@ import java.util.List;
 import static com.digiota.fotodirs.view.MainViewMvcImpl.FOLDER_INDEX;
 
 
-public class FotoGridFragment  extends Fragment implements AdapterView.OnItemClickListener {
+public class FotoGridFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     FotoGridFragmentViewMvcImpl mViewMVC;
-    private LayoutInflater mLayoutInflater ;
+    private LayoutInflater mLayoutInflater;
     private LinearLayoutManager lLayout;
-    private List<ItemObject> mRowListItem ;
+    private List<ItemObject> mRowListItem;
 
-    private String mCurrrentFolderName ;
+    private String mCurrrentFolderName;
     private String mCurrentFullFolderName;
 
     Activity mActivity = null;
-    int mCurrentFolder ;
+    int mCurrentFolder;
 
     public FotoGridFragment() {
         // Required empty public constructor
-        mCurrentFolder = 0 ;
+        mCurrentFolder = 0;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCurrrentFolderName = null ;
-        mCurrentFullFolderName = null ;
+        mCurrrentFolderName = null;
+        mCurrentFullFolderName = null;
 
     }
 
@@ -62,25 +62,22 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        Bundle bundle=getArguments();
+        Bundle bundle = getArguments();
 
         //here is your list array
-        mCurrentFolder=bundle.getInt(FOLDER_INDEX);
+        mCurrentFolder = bundle.getInt(FOLDER_INDEX);
 
         LocalMediaDirectory localMediaDirectory = FotoDirsApplication.getLocalMediaDirectory();
-        if (localMediaDirectory != null ) {
+        if (localMediaDirectory != null) {
             mCurrrentFolderName = localMediaDirectory.getFolderNameAtIndex(mCurrentFolder);
             mCurrentFullFolderName = localMediaDirectory.getFullFolderNameAtIndex(mCurrentFolder);
         }
 
 
-
-
-
         mViewMVC = new FotoGridFragmentViewMvcImpl(this.getContext(), null);
 
 
-        mLayoutInflater = inflater ;
+        mLayoutInflater = inflater;
 
         if (mRowListItem == null) {
             mRowListItem = sortItems(getAllItemList());
@@ -90,7 +87,7 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(mActivity, mRowListItem);
 
 
-        mViewMVC.setLayoutAdapter(adapter) ;
+        mViewMVC.setLayoutAdapter(adapter);
 
 
         return mViewMVC.getRootView();
@@ -101,9 +98,8 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
         super.onAttach(context);
 
 
-
-        if (context instanceof Activity){
-            mActivity=(Activity) context;
+        if (context instanceof Activity) {
+            mActivity = (Activity) context;
         }
 
     }
@@ -121,48 +117,53 @@ public class FotoGridFragment  extends Fragment implements AdapterView.OnItemCli
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
-       //Toast.makeText(getActivity(), "Item: " + (position +1) , Toast.LENGTH_SHORT).show();
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //Toast.makeText(getActivity(), "Item: " + (position +1) , Toast.LENGTH_SHORT).show();
     }
 
-    private List<ItemObject> getAllItemList(){
+    private List<ItemObject> getAllItemList() {
         List<ItemObject> allItems = new ArrayList<ItemObject>();
         if (mCurrrentFolderName != null) {
 
 
             File dir = new File(mCurrentFullFolderName);
-            File[] fileList = dir.listFiles();
+            if (dir != null) {
+                File[] fileList = dir.listFiles();
 
 
-            for (int i = 0; i < fileList.length; i++) {
-                String[] parts = fileList[i].toString().split("\\.") ;
-                if (parts.length > 1) {
-                    if (parts[parts.length -1 ].compareToIgnoreCase("jpg") == 0 ) {
-                        allItems.add(new ItemObject( fileList[i]));
-                    } else {
-                        if (parts[parts.length -1 ].compareToIgnoreCase("png") == 0 ) {
+                for (int i = 0; i < fileList.length; i++) {
+                    String[] parts = fileList[i].toString().split("\\.");
+                    if (parts.length > 1) {
+                        if (parts[parts.length - 1].compareToIgnoreCase("jpg") == 0) {
                             allItems.add(new ItemObject(fileList[i]));
                         } else {
-                            if (parts[parts.length -1 ].compareToIgnoreCase("gif") == 0 ) {
+                            if (parts[parts.length - 1].compareToIgnoreCase("jpeg") == 0) {
                                 allItems.add(new ItemObject(fileList[i]));
+                            } else {
+                                if (parts[parts.length - 1].compareToIgnoreCase("png") == 0) {
+                                    allItems.add(new ItemObject(fileList[i]));
+                                } else {
+                                    if (parts[parts.length - 1].compareToIgnoreCase("gif") == 0) {
+                                        allItems.add(new ItemObject(fileList[i]));
+                                    }
+                                }
                             }
                         }
                     }
                 }
-
             }
         }
 
         return allItems;
     }
 
-    private List<ItemObject> sortItems(List<ItemObject> list)  {
+    private List<ItemObject> sortItems(List<ItemObject> list) {
 
-        if (list != null ) {
+        if (list != null) {
 
             Collections.sort(list, Collections.reverseOrder());
         }
-        return list ;
+        return list;
     }
 
 
