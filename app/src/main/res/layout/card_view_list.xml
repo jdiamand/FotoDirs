@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             fresco:failureImage="@android:color/holo_orange_dark"
             android:layout_height="match_parent"
-            fresco:actualImageScaleType="centerCrop"
+            fresco:actualImageScaleType="centerInside"
             fresco:backgroundImage="@android:color/black"
             fresco:placeholderImage="@android:color/holo_blue_dark"
             fresco:fadeDuration="300"

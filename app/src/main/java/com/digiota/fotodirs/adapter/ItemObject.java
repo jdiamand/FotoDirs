@@ -1,20 +1,25 @@
 package com.digiota.fotodirs.adapter;
 
+import android.support.annotation.NonNull;
+
 import java.io.File;
 
 /**
- * Created by jdiamand on 1/18/17.
+ * Created by jdiamand on 1/18/17
+ *
+ *
+ *
  */
 
-public class ItemObject {
+public class ItemObject implements Comparable<ItemObject>{
 
 
-    //private int photoResource;
+
     private File photoFile;
 
-    //public ItemObject( int photoResource, File photoFile ) {
+
     public ItemObject(  File photoFile ) {
-        //this.photoResource = photoResource;
+
         this.photoFile = photoFile;
     }
 
@@ -26,17 +31,9 @@ public class ItemObject {
         return photoFile;
     }
 
-/*
-    public void setPhotoFile(File photoFile) {
-        this.photoFile = photoFile;
-    }
-    public int getPhotoResource() {
-        return photoResource;
-    }
-    public void setPhotoResource(int photoResource) {
-        this.photoResource = photoResource;
-    }
-*/
 
-
+    @Override
+    public int compareTo(@NonNull ItemObject o) {
+        return this.photoFile.toString().compareToIgnoreCase(o.photoFile.toString());
+    }
 }
