@@ -1,6 +1,8 @@
 package com.digiota.fotodirs.view;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +46,17 @@ public class SplashViewMvcImpl implements ViewMvc {
     void initialize() {
 
         TextView textView = (TextView) mRootView.findViewById(R.id.version_number);
-        textView.setText("Version " + mRootView.getResources().getString(R.string.major_version) + "." + mRootView.getResources().getString(R.string.minor_version));
+        String versionNum = "1.0" ;
+
+        try {
+            PackageInfo packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+            versionNum = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            //Handle exception
+        }
+
+
+        textView.setText("Version " + versionNum);
 
     }
 }

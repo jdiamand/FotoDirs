@@ -22,6 +22,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mViewMVC = new SplashViewMvcImpl(this, null);
 
+        /*
+        getPackageInfo(java.lang.String, int) method of PackageManager.
+         */
+
 
         int timeWait = 1500 ;
         if (!FotoDirsApplication.isSplashScreen()) {
